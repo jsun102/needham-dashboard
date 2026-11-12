@@ -14,7 +14,7 @@ Run `node scripts/serve.mjs` to serve `dist` on port 4173. Run `node --test` for
 - Expense filters use recorded dates or service-period ending months, not inferred payment dates. Incomplete dates remain in a separate review section.
 - Paid/unpaid source columns mix operating costs, capital costs, deposits, and possible owner reimbursements. They are not a verified profit-and-loss statement or payable total.
 - All unpaid source entries stay visible regardless of period. Clear them in the workbook only after matching invoice, payer, and settlement/reimbursement evidence.
-- `dist/review.js` contains explanations and dated review observations from November 12, 2026. Explanations apply only to matching source row/category/amounts. Private bank reconciliation remains local and is not published. Utility current balances require separate verification.
+- `dist/review.js` contains explanations and dated review observations from November 12, 2026. Explanations apply only to matching source row/category/amounts. Property-only bank payments and dated utility status are published with explicit user approval. They do not sync automatically. No full account numbers or personal transactions are published. Owner confirms the reviewed unpaid entries are reimbursements owed to Michael, not unpaid vendor bills. Resolve overlapping claims before repayment.
 - Monthly budget assumptions stay separate from actual records. The displayed plan totals -$665.67; the original source net-loss cell differs by one cent.
 - Mortgage funding is a transfer to the mortgage-paying account, not a second operating expense. Its amount/due date require confirmation; no payment is scheduled by this site.
 - Appearance defaults to the operating-system preference, with Light/Dark/System overrides saved in this browser.
@@ -24,4 +24,5 @@ Run `node scripts/serve.mjs` to serve `dist` on port 4173. Run `node --test` for
 The existing site remains a public summary with no login. No bank credentials, full account numbers, tenant names/contact details, or receipt links are included. The source workbook remains private. The repository URL remains `jsun102/needham-dashboard` for link continuity; the displayed website name is Property Financials.
 
 The Apps Script code is in `google-apps-script/`. It publishes selected financial fields only, using read-only spreadsheet access. Updating this website does not redeploy that script or alter source records.
+
 
