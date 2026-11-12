@@ -1,33 +1,27 @@
-# Needham financial dashboard
+# Property Financials
 
-Responsive public dashboard for Needham property financials. Built with HTML, CSS, and JavaScript; no build dependencies.
+A compact, mobile-friendly property financial statement hosted on GitHub Pages. Needham is the first property; the application brand is independent of the property name.
 
-## Run and verify
+## Run and test
 
-Run `node scripts/serve.mjs` and open http://127.0.0.1:4173. Run `node --test` to verify calculations and public data fields.
+Run `node scripts/serve.mjs` to serve `dist` on port 4173. Run `node --test` for financial and period-selection checks. GitHub Actions tests and deploys `dist` on main.
 
-## Publish
+## Data and accounting
 
-In GitHub repository Settings → Pages, select **GitHub Actions** as the source. The included workflow tests and publishes `dist` on pushes to `main`.
+- The authorized Google Apps Script endpoint in `dist/config.js` refreshes spreadsheet records on load, on demand, and every five minutes while visible.
+- Monthly and YTD views use the selected through-month; lifetime uses all available records. Availability is not a claim of complete property history.
+- Rent collections are assigned to workbook months. Ending rent balances use the last period sheet, not a sum of monthly balance snapshots.
+- Expense filters use recorded dates or service-period ending months, not inferred payment dates. Incomplete dates remain in a separate review section.
+- Paid/unpaid source columns mix operating costs, capital costs, deposits, and possible owner reimbursements. They are not a verified profit-and-loss statement or payable total.
+- All unpaid source entries stay visible regardless of period. Clear them in the workbook only after matching invoice, payer, and settlement/reimbursement evidence.
+- `dist/review.js` contains explanations and dated review observations from November 12, 2026. Explanations apply only to matching source row/category/amounts. Private bank reconciliation remains local and is not published. Utility current balances require separate verification.
+- Monthly budget assumptions stay separate from actual records. The displayed plan totals -$665.67; the original source net-loss cell differs by one cent.
+- Mortgage funding is a transfer to the mortgage-paying account, not a second operating expense. Its amount/due date require confirmation; no payment is scheduled by this site.
+- Appearance defaults to the operating-system preference, with Light/Dark/System overrides saved in this browser.
 
-## Automatic spreadsheet refresh
+## Privacy and hosting
 
-1. Create a Google Apps Script project using the Google account that can read the source workbook.
-2. Paste `google-apps-script/Code.gs` into the script editor. Enable the manifest in Project Settings and copy `google-apps-script/appsscript.json` into the manifest to restrict spreadsheet access to read-only.
-3. Deploy as a **Web app**, executing as yourself, with access set to **Anyone**. Review and authorize the spreadsheet read permission.
-4. Put the deployed `/exec` URL in `dist/config.js` as `endpoint` and commit the change.
+The existing site remains a public summary with no login. No bank credentials, full account numbers, tenant names/contact details, or receipt links are included. The source workbook remains private. The repository URL remains `jsun102/needham-dashboard` for link continuity; the displayed website name is Property Financials.
 
-The page refreshes on load, manually, and every five minutes while visible. Until configured, it explicitly displays a saved snapshot rather than claiming live data. Failed refreshes keep the last loaded data and show an error. New tabs named `RentM.YYYY` are picked up automatically.
+The Apps Script code is in `google-apps-script/`. It publishes selected financial fields only, using read-only spreadsheet access. Updating this website does not redeploy that script or alter source records.
 
-Only financial fields selected by the script are published. Names, emails, phone numbers, payment notes, transaction IDs, and receipt links are omitted. The workbook itself does not need to be made public. The public endpoint and repository contain public financial information; the site is not access-controlled. The noindex tag is a search-engine preference, not a privacy mechanism.
-
-## Accounting boundaries
-
-- Rent collections are assigned to the rent-sheet month, not the cash receipt date. Cash App Payments is not added again.
-- Positive unit balances and negative credits are tracked separately. Paid-up units do not represent a verified occupancy rate.
-- The standing monthly plan is separate from actual rent and does not change with the month filter.
-- The displayed plan line items total **-$665.67**. The source's **-$665.66** net-loss cell differs by one cent.
-- Expense entries are not summed into actual profit: the sheet includes acquisitions, deposits, undated items, and potentially overlapping paid/unpaid entries.
-- Source layout changes may require updating the Apps Script mapping. The script fails closed when the known monthly plan cannot be identified.
-
-The initial snapshot was read November 12, 2026. Source: NeedHamOperation.
