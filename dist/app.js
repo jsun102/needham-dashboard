@@ -1,6 +1,6 @@
-import {money,sum,metrics,validate} from './finance.js';
-import {periodMonths,aggregateUnits,expenseMonth,inPeriod} from './periods.js';
-import {explain,reviewedPayments,recurring} from './review.js';
+import {money,sum,metrics,validate} from './finance.js?v=20261112b';
+import {periodMonths,aggregateUnits,expenseMonth,inPeriod} from './periods.js?v=20261112b';
+import {explain,reviewedPayments,recurring} from './review.js?v=20261112b';
 const $=id=>document.getElementById(id);let data,activeMonth;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const label=key=>new Date(key+'-15T12:00:00').toLocaleDateString('en-US',{month:'short',year:'numeric'});
@@ -19,5 +19,6 @@ function renderExpenses(){const mode=$('period').value,f=$('expense-filter').val
 async function refresh(){const endpoint=window.DASHBOARD_CONFIG.endpoint;$('refresh').disabled=true;try{const response=await fetch(endpoint||'data.json',{cache:'no-store',signal:AbortSignal.timeout(20000)});if(!response.ok)throw Error(`Data request failed (${response.status}).`);data=validate(await response.json());data.months.sort((a,b)=>a.key.localeCompare(b.key));activeMonth=data.months.some(m=>m.key===activeMonth)?activeMonth:data.months.at(-1).key;$('month').innerHTML=data.months.map(m=>`<option value="${esc(m.key)}">${esc(label(m.key))}</option>`).join('');$('month').value=activeMonth;render();$('sync-status').className=endpoint?'':'warning';$('sync-status').textContent=endpoint?`Spreadsheet refreshed ${new Date().toLocaleTimeString('en-US',{timeZone:'America/Chicago',hour:'numeric',minute:'2-digit'})} CT · Review notes dated Nov 12, 2026`:`Saved snapshot · ${data.asOf}`;}catch(e){$('sync-status').className='warning';$('sync-status').textContent=`Refresh failed. ${data?'Showing previously loaded records. ':''}${e.message}`;}finally{$('refresh').disabled=false;}}
 $('theme').value=['system','light','dark'].includes(document.documentElement.dataset.theme)?document.documentElement.dataset.theme:'system';$('theme').addEventListener('change',e=>{document.documentElement.dataset.theme=e.target.value;try{localStorage.setItem('property-theme',e.target.value)}catch{}});
 $('month').addEventListener('change',e=>{activeMonth=e.target.value;render()});$('period').addEventListener('change',()=>data&&render());$('search').addEventListener('input',()=>data&&render());$('expense-filter').addEventListener('change',()=>data&&renderExpenses());$('refresh').addEventListener('click',refresh);refresh();setInterval(()=>{if(window.DASHBOARD_CONFIG.endpoint&&!document.hidden)refresh()},window.DASHBOARD_CONFIG.refreshMilliseconds||300000);
+
 
 
