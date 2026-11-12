@@ -19,7 +19,12 @@ function category(description) {
   return 'Uncategorized';
 }
 function publicData() {
-  const book=SpreadsheetApp.openById(SPREADSHEET_ID);
+  const properties=Sheets.Spreadsheets.get(SPREADSHEET_ID,{fields:'sheets.properties'}).sheets.map(s=>s.properties);
+  const selected=properties.filter(s=>/^Rent\d{1,2}\.\d{4}$/.test(s.title)||['Expenses','Utility Expenses'].includes(s.title));
+  const ranges=selected.map(s=>"'"+s.title+"'!A1:J"+s.gridProperties.rowCount);
+  const result=Sheets.Spreadsheets.Values.batchGet(SPREADSHEET_ID,{ranges:ranges,valueRenderOption:'FORMATTED_VALUE'}).valueRanges;
+  const sheets=selected.map((s,i)=>({getName:()=>s.title,getDataRange:()=>({getDisplayValues:()=>result[i].values||[]})}));
+  const book={getSheets:()=>sheets,getSheetByName:name=>sheets.find(s=>s.getName()===name)};
   const months=book.getSheets().filter(s=>/^Rent\d{1,2}\.\d{4}$/.test(s.getName())).map(sheet=>{
     const match=sheet.getName().match(/^Rent(\d{1,2})\.(\d{4})$/);
     const rows=sheet.getDataRange().getDisplayValues();
